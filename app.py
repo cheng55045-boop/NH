@@ -5,7 +5,7 @@ import pandas as pd
 import yfinance as yf
 from datetime import datetime
 
-# 1. 自動獲取台股上市/上櫃全股票清單 (從證券交易所/櫃買中心 API)
+# 1. 自動獲取台股上市/上櫃全股票清單
 def get_taiwan_stock_list():
     stocks = []
     headers = {'User-Agent': 'Mozilla/5.0'}
@@ -46,7 +46,7 @@ def run_screener():
     results = []
     tickers = [s['ticker'] for s in stocks]
     
-    # 批次下載歷史資料 (預設抓取近 1 年 K 線)
+    # 批次下載歷史資料 (每批 100 檔)
     batch_size = 100
     for i in range(0, len(tickers), batch_size):
         batch_tickers = tickers[i:i+batch_size]
@@ -56,13 +56,20 @@ def run_screener():
             for stock in stocks[i:i+batch_size]:
                 ticker = stock['ticker']
                 try:
-                    df = data[ticker] if len(batch_tickers) > 1 else data
+                    # 兼容 yfinance 單一或多重索引回傳格式
+                    if len(batch_tickers) > 1:
+                        if ticker not in data:
+                            continue
+                        df = data[ticker].copy()
+                    else:
+                        df = data.copy()
+                        
                     df = df.dropna(subset=['Close'])
                     
                     if len(df) < 60:
                         continue
                         
-                    # 計算均線
+                    # 計算均線與均量
                     df['MA5'] = df['Close'].rolling(5).mean()
                     df['MA20'] = df['Close'].rolling(20).mean()
                     df['MA60'] = df['Close'].rolling(60).mean()
@@ -71,12 +78,10 @@ def run_screener():
                     latest = df.iloc[-1]
                     prev = df.iloc[-2]
                     
-                    close_p = float(latest['Close'])
-                    open_p = float(latest['Open'])
-                    high_p = float(latest['High'])
-                    low_p = float(latest['Low'])
-                    volume = float(latest['Volume'])
-                    prev_close = float(prev['Close'])
+                    # 確保數值型態正確
+                    close_p = float(latest['Close'].item() if hasattr(latest['Close'], 'item') else latest['Close'])
+                    volume = float(latest['Volume'].item() if hasattr(latest['Volume'], 'item') else latest['Volume'])
+                    prev_close = float(prev['Close'].item() if hasattr(prev['Close'], 'item') else prev['Close'])
                     
                     change = close_p - prev_close
                     change_pct = (change / prev_close) * 100
@@ -85,10 +90,10 @@ def run_screener():
                     past_20d_high = float(df['Close'].iloc[-21:-1].max())
                     past_60d_high = float(df['Close'].iloc[-61:-1].max())
                     
-                    ma5_p = float(latest['MA5'])
-                    ma20_p = float(latest['MA20'])
-                    ma60_p = float(latest['MA60'])
-                    vol_ma5 = float(latest['VolMA5'])
+                    ma5_p = float(latest['MA5'].item() if hasattr(latest['MA5'], 'item') else latest['MA5'])
+                    ma20_p = float(latest['MA20'].item() if hasattr(latest['MA20'], 'item') else latest['MA20'])
+                    ma60_p = float(latest['MA60'].item() if hasattr(latest['MA60'], 'item') else latest['MA60'])
+                    vol_ma5 = float(latest['VolMA5'].item() if hasattr(latest['VolMA5'], 'item') else latest['VolMA5'])
 
                     # 篩選核心邏輯：站上 20MA 且 創近 20 日收盤新高
                     is_above_ma20 = close_p >= ma20_p
