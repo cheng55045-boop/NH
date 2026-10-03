@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>台股當日站上均線暨創新高搜尋器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .up-red { color: #ef4444; }
+        .down-green { color: #22c55e; }
+        .bg-up-red { background-color: #fef2f2; }
+        .bg-down-green { background-color: #f0fdf4; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen pb-12">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <!-- 標頭區 -->
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-700 pb-6 mb-8 gap-4">
+            <div>
+                <h1 class="text-3xl font-bold flex items-center gap-3">
+                    <i class="fa-solid me-1 fa-chart-line text-red-500"></i>台股盤後當日創新高暨站上均線搜尋器
+                </h1>
+                <p class="text-slate-400 mt-1 text-sm">每日盤後 14:30 自動計算真實收盤數據（單位：台幣 TWD）</p>
+            </div>
+            <div class="bg-slate-800 border border-slate-700 px-4 py-2 rounded-lg text-sm text-slate-300">
+                <i class="fa-regular fa-clock me-2 text-slate-400"></i>最後更新時間：<span id="update-time" class="text-amber-400 font-mono">載入中...</span>
+            </div>
+        </header>
+
+        <!-- KPI 數據卡片 -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-slate-800/80 border border-slate-700 p-5 rounded-xl shadow">
+                <div class="text-slate-400 text-sm mb-1">今日符合突破篩選數量</div>
+                <div class="text-3xl font-bold text-slate-100 font-mono" id="total-count">0</div>
+            </div>
+            <div class="bg-slate-800/80 border border-slate-700 p-5 rounded-xl shadow">
+                <div class="text-slate-400 text-sm mb-1">創 60 日 (季) 新高個股數</div>
+                <div class="text-3xl font-bold text-red-400 font-mono" id="high60-count">0</div>
+            </div>
+            <div class="bg-slate-800/80 border border-slate-700 p-5 rounded-xl shadow">
+                <div class="text-slate-400 text-sm mb-1">當日放量突破 (>5日均量)</div>
+                <div class="text-3xl font-bold text-emerald-400 font-mono" id="vol-count">0</div>
+            </div>
+        </div>
+
+        <!-- 篩選控制列 -->
+        <div class="bg-slate-800 border border-slate-700 p-4 rounded-xl mb-6 flex flex-wrap gap-4 items-center justify-between">
+            <div class="flex flex-wrap gap-3 items-center">
+                <input type="text" id="search-input" placeholder="搜尋代號或股票名稱..." class="bg-slate-900 border border-slate-700 px-3 py-2 rounded-lg text-sm focus:outline-none focus:border-red-500 w-48">
+                <select id="market-filter" class="bg-slate-900 border border-slate-700 px-3 py-2 rounded-lg text-sm focus:outline-none">
+                    <option value="ALL">全部市場 (上市/上櫃)</option>
+                    <option value="TWSE">僅上市 (TWSE)</option>
+                    <option value="TPEx">僅上櫃 (TPEx)</option>
+                </select>
+                <label class="flex items-center gap-2 cursor-pointer text-sm text-slate-300">
+                    <input type="checkbox" id="vol-filter" class="rounded bg-slate-900 border-slate-700 text-red-500 focus:ring-0"> 僅看爆量突破 (>5MA均量)
+                </label>
+            </div>
+        </div>
+
+        <!-- 股票數據表格 -->
+        <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm text-slate-300">
+                    <thead class="bg-slate-900/80 text-xs text-slate-400 uppercase border-b border-slate-700 font-medium">
+                        <tr>
+                            <th class="p-4">股票</th>
+                            <th class="p-4">市場</th>
+                            <th class="p-4 text-right">當日收盤價 (TWD)</th>
+                            <th class="p-4 text-right">漲跌幅</th>
+                            <th class="p-4 text-right">20MA (月線)</th>
+                            <th class="p-4 text-right">前20日新高</th>
+                            <th class="p-4 text-right">突破幅度</th>
+                            <th class="p-4 text-center">狀態</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stock-table-body" class="divide-y divide-slate-700/50">
+                        <tr>
+                            <td colspan="8" class="text-center p-8 text-slate-500">正在讀取最新盤後資料...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allStocks = [];
+
+        async function loadData() {
+            try {
+                const res = await fetch('data.json');
+                const data = await res.json();
+                
+                document.getElementById('update-time').innerText = data.updated_at || '尚未執行';
+                document.getElementById('total-count').innerText = data.total_count || 0;
+                
+                allStocks = data.stocks || [];
+                
+                document.getElementById('high60-count').innerText = allStocks.filter(s => s.is_new_high_60d).length;
+                document.getElementById('vol-count').innerText = allStocks.filter(s => s.is_vol_breakout).length;
+
+                renderTable();
+            } catch (err) {
+                document.getElementById('stock-table-body').innerHTML = `
+                    <tr><td colspan="8" class="text-center p-8 text-amber-500">尚無盤後數據，請等待 GitHub Actions 每日 14:30 自動執行產出。</td></tr>
+                `;
+            }
+        }
+
+        function renderTable() {
+            const search = document.getElementById('search-input').value.toLowerCase();
+            const market = document.getElementById('market-filter').value;
+            const onlyVol = document.getElementById('vol-filter').checked;
+
+            const filtered = allStocks.filter(s => {
+                const matchSearch = s.code.includes(search) || s.name.toLowerCase().includes(search);
+                const matchMarket = market === 'ALL' || s.market === market;
+                const matchVol = !onlyVol || s.is_vol_breakout;
+                return matchSearch && matchMarket && matchVol;
+            });
+
+            const tbody = document.getElementById('stock-table-body');
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center p-8 text-slate-500">無符合條件個股</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(s => {
+                const isUp = s.change >= 0;
+                const colorClass = isUp ? 'up-red' : 'down-green';
+                const sign = isUp ? '+' : '';
+
+                return `
+                    <tr class="hover:bg-slate-700/30 transition">
+                        <td class="p-4 font-bold text-slate-100">${s.name} <span class="text-slate-400 font-mono text-xs">(${s.code})</span></td>
+                        <td class="p-4"><span class="px-2 py-1 rounded text-xs ${s.market === 'TWSE' ? 'bg-blue-900/50 text-blue-300' : 'bg-purple-900/50 text-purple-300'}">${s.market === 'TWSE' ? '上市' : '上櫃'}</span></td>
+                        <td class="p-4 text-right font-mono font-bold ${colorClass}">NT$ ${s.close.toFixed(2)}</td>
+                        <td class="p-4 text-right font-mono ${colorClass}">${sign}${s.change_pct.toFixed(2)}%</td>
+                        <td class="p-4 text-right font-mono text-slate-300">${s.ma20.toFixed(2)}</td>
+                        <td class="p-4 text-right font-mono text-slate-300">${s.high_20d.toFixed(2)}</td>
+                        <td class="p-4 text-right font-mono text-emerald-400">+${s.breakout_pct_20d.toFixed(2)}%</td>
+                        <td class="p-4 text-center">
+                            <div class="flex gap-1 justify-center">
+                                ${s.is_new_high_60d ? '<span class="bg-red-900/60 text-red-300 px-2 py-0.5 rounded text-xs border border-red-700/50">創季新高</span>' : ''}
+                                ${s.is_vol_breakout ? '<span class="bg-emerald-900/60 text-emerald-300 px-2 py-0.5 rounded text-xs border border-emerald-700/50">爆量</span>' : ''}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        document.getElementById('search-input').addEventListener('input', renderTable);
+        document.getElementById('market-filter').addEventListener('change', renderTable);
+        document.getElementById('vol-filter').addEventListener('change', renderTable);
+
+        loadData();
+    </script>
+</body>
+</html>
