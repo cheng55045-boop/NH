@@ -1,138 +1,169 @@
-import os
 import json
-import requests
+from datetime import datetime
 import pandas as pd
 import yfinance as yf
-from datetime import datetime
 
-# 1. 自動獲取台股上市/上櫃全股票清單
-def get_taiwan_stock_list():
-    stocks = []
-    headers = {'User-Agent': 'Mozilla/5.0'}
-    
-    # 上市股票 API
+# 監控的台股清單範例（可依需求自行擴充）
+STOCK_LIST = [
+    {"code": "2330", "name": "台積電", "market": "TW"},
+    {"code": "2317", "name": "鴻海", "market": "TW"},
+    {"code": "2454", "name": "聯發科", "market": "TW"},
+    {"code": "2308", "name": "台達電", "market": "TW"},
+    {"code": "2603", "name": "長榮", "market": "TW"},
+]
+
+
+def resample_k_bars(df, n):
+  """將日K數據重採樣（Resample）為每 N 個交易日合成一根新 K 棒"""
+  df = df.copy()
+  df["Group"] = range(len(df)) // n
+  resampled = df.groupby("Group").agg(
+      {
+          "Open": "first",
+          "High": "max",
+          "Low": "min",
+          "Close": "last",
+          "Volume": "sum",
+      }
+  )
+  return resampled
+
+
+def check_3d_higher_lows(df_3, count=3):
+  """條件二：從 3 天 K 棒檢測「底底高 (Higher Lows)」結構"""
+  if len(df_3) < count:
+    return False
+  lows = df_3["Low"].iloc[-count:].values
+  # 檢查後一個低點是否大於前一個低點
+  return all(lows[i] > lows[i - 1] for i in range(1, len(lows)))
+
+
+def check_3d_bullish_engulfing(df_3):
+  """條件三：從 3 天 K 棒檢測「紅吞」
+
+  回傳：(是否紅吞, 進場價(收盤價), 出場/停損價(最低價))
+  """
+  if len(df_3) < 2:
+    return False, 0.0, 0.0
+
+  curr = df_3.iloc[-1]
+  prev = df_3.iloc[-2]
+
+  is_curr_green = curr["Close"] > curr["Open"]
+  is_prev_red = prev["Close"] < prev["Open"]
+
+  # 實體完全包覆邏輯
+  engulfs = (
+      is_curr_green
+      and is_prev_red
+      and curr["Open"] <= prev["Close"]
+      and curr["Close"] >= prev["Open"]
+  )
+
+  if engulfs:
+    entry_price = float(curr["Close"])  # 進場價：3天K棒紅吞的收盤價
+    exit_price = float(curr["Low"])  # 出場價：3天K棒紅吞的最低點
+    return True, entry_price, exit_price
+
+  return False, 0.0, 0.0
+
+
+def check_3d_bearish_warning(df_3):
+  """警告標誌：從 3 天 K 棒檢測是否有「黑吞」出現"""
+  if len(df_3) < 2:
+    return False
+
+  curr = df_3.iloc[-1]
+  prev = df_3.iloc[-2]
+
+  is_curr_red = curr["Close"] < curr["Open"]
+  is_prev_green = prev["Close"] > prev["Open"]
+
+  # 黑吞包覆邏輯
+  engulfs = (
+      is_curr_red
+      and is_prev_green
+      and curr["Open"] >= prev["Close"]
+      and curr["Close"] <= prev["Open"]
+  )
+  return engulfs
+
+
+def fetch_and_filter_stocks():
+  filtered_stocks = []
+
+  for stock in STOCK_LIST:
+    symbol = f"{stock['code']}.TW"
     try:
-        url_twse = "https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL"
-        res = requests.get(url_twse, headers=headers, timeout=10)
-        if res.status_code == 200:
-            for item in res.json():
-                code = item.get('Code', '')
-                name = item.get('Name', '')
-                if len(code) == 4 and code.isdigit():
-                    stocks.append({'code': code, 'name': name, 'market': 'TWSE', 'ticker': f"{code}.TW"})
+      # 抓取近 1 年歷史數據
+      df = yf.download(symbol, period="1y", progress=False)
+      if df.empty or len(df) < 150:  # 確保有足夠的K棒資料計算47天與3天
+        continue
+
+      if isinstance(df.columns, pd.MultiIndex):
+        df.columns = df.columns.get_level_values(0)
+
+      # 1. 建立 47 天 K 棒數據
+      df_47 = resample_k_bars(df, 47)
+      # 條件一：47天K棒的收盤價高於前一根47天K棒的最高點
+      cond_47_breakout = False
+      if len(df_47) >= 2:
+        curr_47_close = df_47["Close"].iloc[-1]
+        prev_47_high = df_47["High"].iloc[-2]
+        cond_47_breakout = curr_47_close > prev_47_high
+
+      if not cond_47_breakout:
+        continue  # 若第一關 47天突破沒過，直接跳過
+
+      # 2. 建立 3 天 K 棒數據
+      df_3 = resample_k_bars(df, 3)
+
+      # 條件二：3天K棒底底高
+      is_hl = check_3d_higher_lows(df_3, count=3)
+      if not is_hl:
+        continue  # 必須符合 3天K棒底底高
+
+      # 條件三：3天K棒紅吞（並取得進場價與出場價）
+      is_engulf, entry_price, exit_price = check_3d_bullish_engulfing(df_3)
+      if not is_engulf:
+        continue  # 必須符合 3天K棒紅吞
+
+      # 檢查是否有黑吞警告標誌
+      has_bearish_warning = check_3d_bearish_warning(df_3)
+
+      latest_daily = df.iloc[-1]
+      prev_daily = df.iloc[-2]
+      close = float(latest_daily["Close"])
+      prev_close = float(prev_daily["Close"])
+      change_pct = round(((close - prev_close) / prev_close) * 100, 2)
+      volume = int(latest_daily["Volume"])
+
+      filtered_stocks.append({
+          "code": stock["code"],
+          "name": stock["name"],
+          "market": stock["market"],
+          "close": close,
+          "change_pct": change_pct,
+          "volume": volume,
+          "entry_price": entry_price,  # 3天K棒紅吞收盤價
+          "exit_price": exit_price,  # 3天K棒紅吞最低點
+          "has_warning": has_bearish_warning,  # 是否出現黑吞警告
+      })
+
     except Exception as e:
-        print(f"獲取上市股票失敗: {e}")
+      print(f"處理股票 {stock['code']} 時發生錯誤: {e}")
 
-    # 上櫃股票 API
-    try:
-        url_tpex = "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap03_O"
-        res = requests.get(url_tpex, headers=headers, timeout=10)
-        if res.status_code == 200:
-            for item in res.json():
-                code = item.get('SecuritiesCompanyCode', '')
-                name = item.get('CompanyName', '')
-                if len(code) == 4 and code.isdigit():
-                    stocks.append({'code': code, 'name': name, 'market': 'TPEx', 'ticker': f"{code}.TWO"})
-    except Exception as e:
-        print(f"獲取上櫃股票失敗: {e}")
+  output_data = {
+      "updated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+      "total_count": len(filtered_stocks),
+      "stocks": filtered_stocks,
+  }
 
-    return stocks
+  with open("data.json", "w", encoding="utf-8") as f:
+    json.dump(output_data, f, ensure_ascii=False, indent=4)
 
-def run_screener():
-    print("🚀 開始獲取台股上市櫃個股清單...")
-    stocks = get_taiwan_stock_list()
-    print(f"共獲取 {len(stocks)} 檔個股，準備分析收盤價...")
+  print(f"資料更新完成，共篩選出 {len(filtered_stocks)} 檔符合條件個股。")
 
-    results = []
-    tickers = [s['ticker'] for s in stocks]
-    
-    # 批次下載歷史資料 (每批 100 檔)
-    batch_size = 100
-    for i in range(0, len(tickers), batch_size):
-        batch_tickers = tickers[i:i+batch_size]
-        try:
-            data = yf.download(batch_tickers, period="1y", group_by='ticker', progress=False)
-            
-            for stock in stocks[i:i+batch_size]:
-                ticker = stock['ticker']
-                try:
-                    # 兼容 yfinance 單一或多重索引回傳格式
-                    if len(batch_tickers) > 1:
-                        if ticker not in data:
-                            continue
-                        df = data[ticker].copy()
-                    else:
-                        df = data.copy()
-                        
-                    df = df.dropna(subset=['Close'])
-                    
-                    if len(df) < 60:
-                        continue
-                        
-                    # 計算均線與均量
-                    df['MA5'] = df['Close'].rolling(5).mean()
-                    df['MA20'] = df['Close'].rolling(20).mean()
-                    df['MA60'] = df['Close'].rolling(60).mean()
-                    df['VolMA5'] = df['Volume'].rolling(5).mean()
-
-                    latest = df.iloc[-1]
-                    prev = df.iloc[-2]
-                    
-                    # 確保數值型態正確
-                    close_p = float(latest['Close'].item() if hasattr(latest['Close'], 'item') else latest['Close'])
-                    volume = float(latest['Volume'].item() if hasattr(latest['Volume'], 'item') else latest['Volume'])
-                    prev_close = float(prev['Close'].item() if hasattr(prev['Close'], 'item') else prev['Close'])
-                    
-                    change = close_p - prev_close
-                    change_pct = (change / prev_close) * 100
-
-                    # 判斷近 20日/60日 最高價 (不含今日)
-                    past_20d_high = float(df['Close'].iloc[-21:-1].max())
-                    past_60d_high = float(df['Close'].iloc[-61:-1].max())
-                    
-                    ma5_p = float(latest['MA5'].item() if hasattr(latest['MA5'], 'item') else latest['MA5'])
-                    ma20_p = float(latest['MA20'].item() if hasattr(latest['MA20'], 'item') else latest['MA20'])
-                    ma60_p = float(latest['MA60'].item() if hasattr(latest['MA60'], 'item') else latest['MA60'])
-                    vol_ma5 = float(latest['VolMA5'].item() if hasattr(latest['VolMA5'], 'item') else latest['VolMA5'])
-
-                    # 篩選核心邏輯：站上 20MA 且 創近 20 日收盤新高
-                    is_above_ma20 = close_p >= ma20_p
-                    is_new_high_20d = close_p > past_20d_high
-
-                    if is_above_ma20 and is_new_high_20d:
-                        results.append({
-                            "code": stock["code"],
-                            "name": stock["name"],
-                            "market": stock["market"],
-                            "close": round(close_p, 2),
-                            "change": round(change, 2),
-                            "change_pct": round(change_pct, 2),
-                            "volume": int(volume),
-                            "is_vol_breakout": volume > vol_ma5,
-                            "ma5": round(ma5_p, 2),
-                            "ma20": round(ma20_p, 2),
-                            "ma60": round(ma60_p, 2),
-                            "high_20d": round(past_20d_high, 2),
-                            "high_60d": round(past_60d_high, 2),
-                            "is_new_high_60d": close_p > past_60d_high,
-                            "breakout_pct_20d": round(((close_p - past_20d_high) / past_20d_high) * 100, 2)
-                        })
-                except Exception as e:
-                    continue
-        except Exception as e:
-            print(f"批次下載失敗 {i}: {e}")
-
-    # 輸出資料與時間戳記
-    output_data = {
-        "updated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "total_count": len(results),
-        "stocks": results
-    }
-
-    with open("data.json", "w", encoding="utf-8") as f:
-        json.dump(output_data, f, ensure_ascii=False, indent=2)
-
-    print(f"✅ 篩選完成！共找到 {len(results)} 檔符合條件個股，數據已寫入 data.json")
 
 if __name__ == "__main__":
-    run_screener()
+  fetch_and_filter_stocks()
