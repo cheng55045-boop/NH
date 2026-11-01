@@ -1,5 +1,86 @@
 {
-    "updated_at": "2026-11-01 15:34:33",
-    "total_count": 0,
-    "stocks": []
+    "updated_at": "2026-11-01 15:51:46",
+    "total_count": 8,
+    "stocks": [
+        {
+            "code": "3691",
+            "name": "GIGASOLAR MATERIALS CORPORATION",
+            "close": 141.0,
+            "change_pct": -2.08,
+            "volume": 11458,
+            "entry_price": 141.0,
+            "exit_price": 130.0,
+            "has_warning": false
+        },
+        {
+            "code": "6925",
+            "name": "eLand",
+            "close": 126.0,
+            "change_pct": -0.79,
+            "volume": 948,
+            "entry_price": 126.0,
+            "exit_price": 114.5,
+            "has_warning": false
+        },
+        {
+            "code": "2892",
+            "name": "FIRST FINANCIAL HOLDING CO LTD",
+            "close": 44.599998474121094,
+            "change_pct": 0.34,
+            "volume": 30596,
+            "entry_price": 44.599998474121094,
+            "exit_price": 42.5,
+            "has_warning": false
+        },
+        {
+            "code": "7704",
+            "name": "Finesse",
+            "close": 87.30000305175781,
+            "change_pct": 9.95,
+            "volume": 2604,
+            "entry_price": 87.30000305175781,
+            "exit_price": 76.0999984741211,
+            "has_warning": false
+        },
+        {
+            "code": "2466",
+            "name": "COSMO ELECTRONICS",
+            "close": 354.0,
+            "change_pct": 9.94,
+            "volume": 1119,
+            "entry_price": 354.0,
+            "exit_price": 300.0,
+            "has_warning": false
+        },
+        {
+            "code": "6199",
+            "name": "TIENPIN UNITED ENTERPRISE CO LT",
+            "close": 160.5,
+            "change_pct": 1.26,
+            "volume": 7633,
+            "entry_price": 160.5,
+            "exit_price": 157.0,
+            "has_warning": false
+        },
+        {
+            "code": "3321",
+            "name": "UNIFLEX TECHNOLOGY INC",
+            "close": 20.100000381469727,
+            "change_pct": -6.29,
+            "volume": 1409,
+            "entry_price": 20.100000381469727,
+            "exit_price": 19.450000762939453,
+            "has_warning": false
+        },
+        {
+            "code": "8099",
+            "name": "TATUNG SYSTEM TECHNOLOGIES INC",
+            "close": 111.5,
+            "change_pct": 8.78,
+            "volume": 8191,
+            "entry_price": 111.5,
+            "exit_price": 98.0,
+            "has_warning": false
+        }
+    ]
 }
