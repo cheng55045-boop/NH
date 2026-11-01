@@ -13,7 +13,7 @@
         <div class="flex flex-col md:flex-row justify-between items-center mb-8 border-b border-gray-800 pb-4">
             <div>
                 <h1 class="text-3xl font-bold tracking-wider text-emerald-400">📈 台股智慧選股策略</h1>
-                <p class="text-sm text-gray-400 mt-1">策略：47天K突破 + 3天K底底高 + 3天K紅吞噬</p>
+                <p class="text-sm text-gray-400 mt-1">策略：47天K突破 + 3天K底底高 + 3天K收盤扎實突破</p>
             </div>
             <div id="update-time" class="text-sm text-gray-400 mt-2 md:mt-0 bg-gray-800 px-4 py-2 rounded-lg">
                 資料更新中...
@@ -38,9 +38,9 @@
                             <th class="p-4">代號 / 名稱</th>
                             <th class="p-4">收盤價</th>
                             <th class="p-4">漲跌幅</th>
-                            <th class="p-4">成交量</th>
-                            <th class="p-4 text-emerald-400 font-semibold">建議進場價 (紅吞收盤)</th>
-                            <th class="p-4 text-rose-400 font-semibold">建議出場/停損價 (紅吞最低)</th>
+                            <th class="p-4">成交量 (張)</th>
+                            <th class="p-4 text-emerald-400 font-semibold">建議進場價 (收盤)</th>
+                            <th class="p-4 text-rose-400 font-semibold">建議出場/停損價 (最低)</th>
                         </tr>
                     </thead>
                     <tbody id="stock-table-body" class="divide-y divide-gray-700 text-sm">
@@ -60,12 +60,13 @@
                 
                 const data = await response.json();
                 
-                document.getElementById('update-time').innerText = `最後更新時間：${data.updated_at}`; document.getElementById('total-count').innerText = `${data.total_count} 檔`;
+                document.getElementById('update-time').innerText = `最後更新時間：${data.updated_at}`;
+                document.getElementById('total-count').innerText = `${data.total_count} 檔`;
 
                 const tbody = document.getElementById('stock-table-body');
                 tbody.innerHTML = '';
 
-                if (data.stocks.length === 0) {
+                if (!data.stocks || data.stocks.length === 0) {
                     tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-gray-400">今日沒有符合所有嚴格篩選條件的股票</td></tr>`;
                     return;
                 }
@@ -74,8 +75,36 @@
                     const tr = document.createElement('tr');
                     tr.className = "hover:bg-gray-750 transition-colors";
 
+                    // 台股習慣：漲用紅(rose)、跌用綠(emerald)
                     const changeColor = stock.change_pct >= 0 ? 'text-rose-400' : 'text-emerald-400';
                     const changeSign = stock.change_pct >= 0 ? '+' : '';
 
                     const warningHtml = stock.has_warning 
-                        ? `<span class="bg-rose-500/20 text-rose-400 px-2 py-1 rounded text-xs font-bold border
+                        ? `<span class="bg-rose-500/20 text-rose-400 px-2 py-1 rounded text-xs font-bold border border-rose-500/30">注意</span>`
+                        : `<span class="bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded text-xs font-bold border border-emerald-500/30">正常</span>`;
+
+                    tr.innerHTML = `
+                        <td class="p-4">${warningHtml}</td>
+                        <td class="p-4 font-semibold text-white">
+                            <div class="text-emerald-300">${stock.code}</div>
+                            <div class="text-xs text-gray-400 truncate max-w-xs">${stock.name}</div>
+                        </td>
+                        <td class="p-4 font-mono">${stock.close.toFixed(2)}</td>
+                        <td class="p-4 font-mono ${changeColor}">${changeSign}${stock.change_pct.toFixed(2)}%</td>
+                        <td class="p-4 font-mono">${stock.volume.toLocaleString()}</td>
+                        <td class="p-4 font-mono text-emerald-400 font-bold">${stock.entry_price.toFixed(2)}</td>
+                        <td class="p-4 font-mono text-rose-400 font-bold">${stock.exit_price.toFixed(2)}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+            } catch (error) {
+                console.error('載入資料失敗:', error);
+                document.getElementById('stock-table-body').innerHTML = `<tr><td colspan="7" class="p-6 text-center text-rose-400">載入數據失敗，請稍後再試</td></tr>`;
+            }
+        }
+
+        loadStockData();
+    </script>
+</body>
+</html>
