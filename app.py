@@ -2,14 +2,53 @@ import yfinance as yf
 import pandas as pd
 from datetime import datetime
 import json
+import requests
+import io
 
-# 目標股票清單（可自行擴充）
-STOCK_LIST = ["2330.TW", "2317.TW", "2454.TW", "2308.TW", "2603.TW", "2382.TW", "3231.TW", "2376.TW"]
+def get_all_taiwan_stocks():
+    """自動從公開來源取得上市櫃股票代號清單"""
+    stock_list = []
+    try:
+        # 抓取臺灣證券交易所上市股票代號 (TWSE)
+        url_twse = "https://isin.twse.com.tw/isin/C_public.jsp?strMode=2"
+        res = requests.get(url_twse, timeout=10)
+        res.encoding = 'big5'
+        df_twse = pd.read_html(io.StringIO(res.text))[0]
+        df_twse.columns = df_twse.iloc[0]
+        df_twse = df_twse.iloc[1:]
+        
+        for row in df_twse['有價證券代號及名稱']:
+            if pd.notna(row) and '\u3000' in row:
+                code = row.split('\u3000')[0].strip()
+                if len(code) == 4 and code.isdigit():
+                    stock_list.append(code + ".TW")
+                    
+        # 抓取櫃買中心上櫃股票代號 (TPEX)
+        url_tpex = "https://isin.twse.com.tw/isin/C_public.jsp?strMode=4"
+        res_t = requests.get(url_tpex, timeout=10)
+        res_t.encoding = 'big5'
+        df_tpex = pd.read_html(io.StringIO(res_t.text))[0]
+        df_tpex.columns = df_tpex.iloc[0]
+        df_tpex = df_tpex.iloc[1:]
+        
+        for row in df_tpex['有價證券代號及名稱']:
+            if pd.notna(row) and '\u3000' in row:
+                code = row.split('\u3000')[0].strip()
+                if len(code) == 4 and code.isdigit():
+                    stock_list.append(code + ".TWO")
+    except Exception as e:
+        print(f"自動取得股票清單失敗，將使用預設核心清單: {e}")
+        # 若發生網路阻擋，備用一組涵蓋各產業的擴充清單
+        stock_list = ["2330.TW", "2317.TW", "2454.TW", "2308.TW", "2603.TW", "2382.TW", "3231.TW", "2881.TW", "2882.TW", "3034.TW"]
+        
+    return list(set(stock_list))
 
 def fetch_and_analyze():
     results = []
+    stock_symbols = get_all_taiwan_stocks()
+    print(f"總共取得 {len(stock_symbols)} 檔台股標的，開始進行全市場篩選...")
     
-    for symbol in STOCK_LIST:
+    for symbol in stock_symbols:
         try:
             # 抓取足夠的日 K 歷史數據
             df = yf.download(symbol, period="2y", interval="1d", progress=False)
@@ -20,7 +59,6 @@ def fetch_and_analyze():
             if isinstance(df.columns, pd.MultiIndex):
                 df.columns = df.columns.get_level_values(0)
                 
-            # 確保欄位名稱正確
             df = df[['Open', 'High', 'Low', 'Close', 'Volume']].dropna()
             
             # -------------------------------------------------------------
@@ -37,8 +75,6 @@ def fetch_and_analyze():
             if len(df_47) < 2:
                 continue
                 
-            # 檢查倒數第二根的 47 天 K 收盤價是否有高於更前一根的最高點（或依需求調整對應索引）
-            # 這裡我們檢查最新完整或進行中的 47 天週期間關係
             prev_47_high = df_47['High'].iloc[-2]
             curr_47_close = df_47['Close'].iloc[-1]
             
@@ -59,7 +95,6 @@ def fetch_and_analyze():
             if len(df_3) < 4:
                 continue
                 
-            # 檢查最近 3 個 3 天 K 棒是否呈現底底高 (Low 逐步墊高)
             l1 = df_3['Low'].iloc[-4]
             l2 = df_3['Low'].iloc[-3]
             l3 = df_3['Low'].iloc[-2]
@@ -90,10 +125,14 @@ def fetch_and_analyze():
             change_pct = round(((latest_close - prev_close) / prev_close) * 100, 2)
             volume = int(df['Volume'].iloc[-1]) / 1000  # 轉換為張數
             
+            # 略過成交量過低的殭屍股（例如小於 100 張）
+            if volume < 100:
+                continue
+                
             # 嘗試取得股票名稱
             ticker = yf.Ticker(symbol)
             info = ticker.info
-            name = info.get('shortName', symbol)
+            name = info.get('shortName', symbol.split('.')[0])
             
             results.append({
                 "code": symbol.split('.')[0],
@@ -103,11 +142,11 @@ def fetch_and_analyze():
                 "volume": int(volume),
                 "entry_price": entry_price,
                 "exit_price": exit_price,
-                "has_warning": False  # 符合突破與底底高，無黑吞警報
+                "has_warning": False
             })
             
         except Exception as e:
-            print(f"Error processing {symbol}: {e}")
+            # 個股抓取失敗直接略過，不中斷整體流程
             continue
             
     # 輸出結果至 data.json
