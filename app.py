@@ -38,7 +38,6 @@ def get_all_taiwan_stocks():
                     stock_list.append(code + ".TWO")
     except Exception as e:
         print(f"自動取得股票清單失敗，將使用預設核心清單: {e}")
-        # 若發生網路阻擋，備用一組涵蓋各產業的擴充清單
         stock_list = ["2330.TW", "2317.TW", "2454.TW", "2308.TW", "2603.TW", "2382.TW", "3231.TW", "2881.TW", "2882.TW", "3034.TW"]
         
     return list(set(stock_list))
@@ -46,7 +45,7 @@ def get_all_taiwan_stocks():
 def fetch_and_analyze():
     results = []
     stock_symbols = get_all_taiwan_stocks()
-    print(f"總共取得 {len(stock_symbols)} 檔台股標的，開始進行全市場篩選...")
+    print(f"總共取得 {len(stock_symbols)} 檔台股標的，開始進行全市場三日 K 波段篩選...")
     
     for symbol in stock_symbols:
         try:
@@ -62,7 +61,7 @@ def fetch_and_analyze():
             df = df[['Open', 'High', 'Low', 'Close', 'Volume']].dropna()
             
             # -------------------------------------------------------------
-            # 第一關：47 天 K 棒重採樣與突破判定
+            # 第一關：47 天 K 棒重採樣與巨型突破判定
             # -------------------------------------------------------------
             df_47 = df.resample('47D').agg({
                 'Open': 'first',
@@ -82,7 +81,7 @@ def fetch_and_analyze():
                 continue
                 
             # -------------------------------------------------------------
-            # 第二關：3 天 K 棒重採樣與底底高結構檢測
+            # 第二關：3 天 K 棒 (3D) 重採樣與波段底底高結構檢測
             # -------------------------------------------------------------
             df_3 = df.resample('3D').agg({
                 'Open': 'first',
@@ -92,20 +91,22 @@ def fetch_and_analyze():
                 'Volume': 'sum'
             }).dropna()
             
-            if len(df_3) < 4:
+            if len(df_3) < 10:
                 continue
                 
-            l1 = df_3['Low'].iloc[-4]
-            l2 = df_3['Low'].iloc[-3]
-            l3 = df_3['Low'].iloc[-2]
-            l4 = df_3['Low'].iloc[-1]
+            # 取最近 8 根 3D K 棒來檢視波段回檔結構
+            recent_lows = df_3['Low'].iloc[-8:].values
+            mid = len(recent_lows) // 2
+            early_low = recent_lows[:mid].min()
+            late_low = recent_lows[mid:-1].min()
             
-            is_higher_lows = (l4 > l3) and (l3 > l2)
+            # 條件 A：回檔低點墊高（底底高結構）
+            is_higher_lows = late_low > early_low
             if not is_higher_lows:
                 continue
                 
             # -------------------------------------------------------------
-            # 第三關：最新 3 天 K 收盤價高於前一根 3 天 K 的最高點
+            # 第三關：最新 3D K 棒收盤價高於前一根 3D K 棒的最高點 (突破確認)
             # -------------------------------------------------------------
             prev_3_high = df_3['High'].iloc[-2]
             curr_3_close = df_3['Close'].iloc[-1]
@@ -118,14 +119,14 @@ def fetch_and_analyze():
             # 第四關：決定進場與出場價位
             # -------------------------------------------------------------
             entry_price = float(curr_3_close)
-            exit_price = float(curr_3_low)
+            exit_price = float(curr_3_low) # 防守價：突破當根 3D K 棒的最低點
             
             latest_close = float(df['Close'].iloc[-1])
             prev_close = float(df['Close'].iloc[-2])
             change_pct = round(((latest_close - prev_close) / prev_close) * 100, 2)
             volume = int(df['Volume'].iloc[-1]) / 1000  # 轉換為張數
             
-            # 略過成交量過低的殭屍股（例如小於 100 張）
+            # 略過成交量過低的殭屍股（小於 100 張）
             if volume < 100:
                 continue
                 
@@ -146,7 +147,6 @@ def fetch_and_analyze():
             })
             
         except Exception as e:
-            # 個股抓取失敗直接略過，不中斷整體流程
             continue
             
     # 輸出結果至 data.json
@@ -158,6 +158,8 @@ def fetch_and_analyze():
     
     with open('data.json', 'w', encoding='utf-8') as f:
         json.dump(output, f, ensure_ascii=False, indent=4)
+    
+    print(f"台股三日 K 掃描完成！共找到 {len(results)} 檔符合條件標的。")
 
 if __name__ == "__main__":
     fetch_and_analyze()
