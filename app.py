@@ -9,7 +9,6 @@ def get_all_taiwan_stocks():
     """自動從公開來源取得上市櫃股票代號清單"""
     stock_list = []
     try:
-        # 抓取臺灣證券交易所上市股票代號 (TWSE)
         url_twse = "https://isin.twse.com.tw/isin/C_public.jsp?strMode=2"
         res = requests.get(url_twse, timeout=10)
         res.encoding = 'big5'
@@ -23,7 +22,6 @@ def get_all_taiwan_stocks():
                 if len(code) == 4 and code.isdigit():
                     stock_list.append(code + ".TW")
                     
-        # 抓取櫃買中心上櫃股票代號 (TPEX)
         url_tpex = "https://isin.twse.com.tw/isin/C_public.jsp?strMode=4"
         res_t = requests.get(url_tpex, timeout=10)
         res_t.encoding = 'big5'
@@ -42,36 +40,40 @@ def get_all_taiwan_stocks():
         
     return list(set(stock_list))
 
+def make_candles_from_present(df, n):
+    """將日K從最新一天（現在）倒數回來，每 n 天打包成一根複合 K 棒"""
+    df_rev = df.iloc[::-1].reset_index(drop=True)
+    df_rev['group'] = df_rev.index // n
+    
+    df_agg = df_rev.groupby('group', sort=False).agg({
+        'Open': 'last',   
+        'High': 'max',
+        'Low': 'min',
+        'Close': 'first', 
+        'Volume': 'sum'
+    })
+    return df_agg.iloc[::-1].reset_index(drop=True)
+
 def fetch_and_analyze():
     results = []
     stock_symbols = get_all_taiwan_stocks()
-    print(f"總共取得 {len(stock_symbols)} 檔台股標的，開始進行全市場三日 K 波段篩選...")
+    print(f"總共取得 {len(stock_symbols)} 檔台股標的，開始進行三日 K 策略篩選...")
     
     for symbol in stock_symbols:
         try:
-            # 抓取足夠的日 K 歷史數據
             df = yf.download(symbol, period="2y", interval="1d", progress=False)
             if df.empty or len(df) < 150:
                 continue
                 
-            # 處理 MultiIndex 欄位問題
             if isinstance(df.columns, pd.MultiIndex):
                 df.columns = df.columns.get_level_values(0)
                 
-            df = df[['Open', 'High', 'Low', 'Close', 'Volume']].dropna().reset_index(drop=True)
+            df = df[['Open', 'High', 'Low', 'Close', 'Volume']].dropna()
             
             # -------------------------------------------------------------
-            # 第一關：47 個交易日大週期打包與突破判定
+            # 第一關：從現在回推 47 個交易日大週期打包與突破判定
             # -------------------------------------------------------------
-            df['group_47'] = df.index // 47
-            df_47 = df.groupby('group_47').agg({
-                'Open': 'first',
-                'High': 'max',
-                'Low': 'min',
-                'Close': 'last',
-                'Volume': 'sum'
-            }).dropna()
-            
+            df_47 = make_candles_from_present(df, 47)
             if len(df_47) < 2:
                 continue
                 
@@ -82,17 +84,9 @@ def fetch_and_analyze():
                 continue
                 
             # -------------------------------------------------------------
-            # 第二關：每 3 根日 K 棒扎實打包合成 1 根 3D 三日 K 棒，檢測底底高結構
+            # 第二關：從現在回推每 3 根日 K 打包合成 3D 三日 K 棒，檢測底底高結構
             # -------------------------------------------------------------
-            df['group_3'] = df.index // 3
-            df_3 = df.groupby('group_3').agg({
-                'Open': 'first',
-                'High': 'max',
-                'Low': 'min',
-                'Close': 'last',
-                'Volume': 'sum'
-            }).dropna()
-            
+            df_3 = make_candles_from_present(df, 3)
             if len(df_3) < 10:
                 continue
                 
@@ -102,7 +96,6 @@ def fetch_and_analyze():
             early_low = recent_lows[:mid].min()
             late_low = recent_lows[mid:-1].min()
             
-            # 條件 A：回檔低點墊高（底底高結構）
             is_higher_lows = late_low > early_low
             if not is_higher_lows:
                 continue
@@ -112,27 +105,25 @@ def fetch_and_analyze():
             # -------------------------------------------------------------
             prev_3_high = df_3['High'].iloc[-2]
             curr_3_close = df_3['Close'].iloc[-1]
-            curr_3_low = df_3['Low'].iloc[-1]
             
             if curr_3_close <= prev_3_high:
                 continue
                 
             # -------------------------------------------------------------
-            # 第四關：決定進場與出場價位
+            # 第四關：進場價與出場價（以突破當根 3D K 棒為準）
             # -------------------------------------------------------------
             entry_price = float(curr_3_close)
-            exit_price = float(curr_3_low) # 防守價：突破當根 3D K 棒的最低點
+            # 防守價：抓「那根收盤後高於前一根三日K高點」的該根三日K棒之最低點
+            exit_price = float(df_3['Low'].iloc[-1])
             
             latest_close = float(df['Close'].iloc[-1])
             prev_close = float(df['Close'].iloc[-2])
             change_pct = round(((latest_close - prev_close) / prev_close) * 100, 2)
             volume = int(df['Volume'].iloc[-1]) / 1000  # 轉換為張數
             
-            # 略過成交量過低的殭屍股（小於 100 張）
             if volume < 100:
                 continue
                 
-            # 嘗試取得股票名稱
             ticker = yf.Ticker(symbol)
             info = ticker.info
             name = info.get('shortName', symbol.split('.')[0])
@@ -151,7 +142,6 @@ def fetch_and_analyze():
         except Exception as e:
             continue
             
-    # 輸出結果至 data.json
     output = {
         "updated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "total_count": len(results),
