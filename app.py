@@ -58,12 +58,13 @@ def fetch_and_analyze():
             if isinstance(df.columns, pd.MultiIndex):
                 df.columns = df.columns.get_level_values(0)
                 
-            df = df[['Open', 'High', 'Low', 'Close', 'Volume']].dropna()
+            df = df[['Open', 'High', 'Low', 'Close', 'Volume']].dropna().reset_index(drop=True)
             
             # -------------------------------------------------------------
-            # 第一關：47 天 K 棒重採樣與巨型突破判定
+            # 第一關：47 個交易日大週期打包與突破判定
             # -------------------------------------------------------------
-            df_47 = df.resample('47D').agg({
+            df['group_47'] = df.index // 47
+            df_47 = df.groupby('group_47').agg({
                 'Open': 'first',
                 'High': 'max',
                 'Low': 'min',
@@ -81,9 +82,10 @@ def fetch_and_analyze():
                 continue
                 
             # -------------------------------------------------------------
-            # 第二關：3 天 K 棒 (3D) 重採樣與波段底底高結構檢測
+            # 第二關：每 3 根日 K 棒扎實打包合成 1 根 3D 三日 K 棒，檢測底底高結構
             # -------------------------------------------------------------
-            df_3 = df.resample('3D').agg({
+            df['group_3'] = df.index // 3
+            df_3 = df.groupby('group_3').agg({
                 'Open': 'first',
                 'High': 'max',
                 'Low': 'min',
