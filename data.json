@@ -1,165 +1,25 @@
 {
-    "updated_at": "2026-11-02 08:02:18",
-    "total_count": 21,
+    "updated_at": "2026-11-02 11:55:36",
+    "total_count": 30,
     "stocks": [
         {
-            "code": "2607",
-            "name": "EVERGREEN INTL STORAGE TRANSPOR",
-            "close": 58.599998474121094,
-            "change_pct": 0.86,
-            "volume": 610,
-            "entry_price": 58.599998474121094,
-            "exit_price": 57.79999923706055,
+            "code": "8432",
+            "name": "TSH BIOPHARM CORPORATION LIMITE",
+            "close": 58.20000076293945,
+            "change_pct": 4.49,
+            "volume": 198,
+            "entry_price": 58.20000076293945,
+            "exit_price": 56.099998474121094,
             "has_warning": false
         },
         {
-            "code": "5013",
-            "name": "NEW BEST WIRE INDUSTRIAL CO",
-            "close": 60.599998474121094,
-            "change_pct": 9.98,
-            "volume": 5194,
-            "entry_price": 60.599998474121094,
-            "exit_price": 56.20000076293945,
-            "has_warning": false
-        },
-        {
-            "code": "2466",
-            "name": "COSMO ELECTRONICS",
-            "close": 380.0,
-            "change_pct": 7.34,
-            "volume": 844,
-            "entry_price": 380.0,
-            "exit_price": 354.0,
-            "has_warning": false
-        },
-        {
-            "code": "6697",
-            "name": "INFORMATION TECHNOLOGY TOTAL SE",
-            "close": 59.70000076293945,
-            "change_pct": 9.94,
-            "volume": 3037,
-            "entry_price": 59.70000076293945,
-            "exit_price": 56.0,
-            "has_warning": false
-        },
-        {
-            "code": "6240",
-            "name": "SUNG GANG CORP LTD",
-            "close": 39.400001525878906,
-            "change_pct": 9.9,
-            "volume": 705,
-            "entry_price": 39.400001525878906,
-            "exit_price": 35.0,
-            "has_warning": false
-        },
-        {
-            "code": "6233",
-            "name": "PROLIFIC TECH INC",
-            "close": 35.20000076293945,
-            "change_pct": 10.0,
-            "volume": 5738,
-            "entry_price": 35.20000076293945,
-            "exit_price": 31.899999618530273,
-            "has_warning": false
-        },
-        {
-            "code": "2254",
-            "name": "COPLUS INC",
-            "close": 106.5,
-            "change_pct": 2.9,
-            "volume": 3248,
-            "entry_price": 106.5,
-            "exit_price": 103.5,
-            "has_warning": false
-        },
-        {
-            "code": "1232",
-            "name": "TTET UNION CORP",
-            "close": 164.0,
-            "change_pct": 4.13,
-            "volume": 734,
-            "entry_price": 164.0,
-            "exit_price": 161.0,
-            "has_warning": false
-        },
-        {
-            "code": "1201",
-            "name": "WEI CHUAN FOOD CORP",
-            "close": 13.649999618530273,
-            "change_pct": 0.74,
-            "volume": 17500,
-            "entry_price": 13.649999618530273,
-            "exit_price": 13.399999618530273,
-            "has_warning": false
-        },
-        {
-            "code": "8099",
-            "name": "TATUNG SYSTEM TECHNOLOGIES INC",
-            "close": 122.5,
-            "change_pct": 9.87,
-            "volume": 1635,
-            "entry_price": 122.5,
-            "exit_price": 109.5,
-            "has_warning": false
-        },
-        {
-            "code": "8272",
-            "name": "Changing",
-            "close": 85.9000015258789,
-            "change_pct": 9.99,
-            "volume": 209,
-            "entry_price": 85.9000015258789,
-            "exit_price": 85.9000015258789,
-            "has_warning": false
-        },
-        {
-            "code": "4116",
-            "name": "BENQ MEDICAL TECHNOLOGY CORPORA",
-            "close": 44.70000076293945,
-            "change_pct": 1.13,
-            "volume": 357,
-            "entry_price": 44.70000076293945,
-            "exit_price": 44.29999923706055,
-            "has_warning": false
-        },
-        {
-            "code": "6199",
-            "name": "TIENPIN UNITED ENTERPRISE CO LT",
-            "close": 162.5,
-            "change_pct": 1.25,
-            "volume": 7602,
-            "entry_price": 162.5,
-            "exit_price": 161.0,
-            "has_warning": false
-        },
-        {
-            "code": "2603",
-            "name": "EVERGREEN MARINE CORP(TAIWAN)",
-            "close": 274.5,
-            "change_pct": 1.1,
-            "volume": 12504,
-            "entry_price": 274.5,
-            "exit_price": 269.0,
-            "has_warning": false
-        },
-        {
-            "code": "3609",
-            "name": "HEP TECH CO. LTD.",
-            "close": 28.299999237060547,
-            "change_pct": 2.17,
-            "volume": 654,
-            "entry_price": 28.299999237060547,
-            "exit_price": 27.5,
-            "has_warning": false
-        },
-        {
-            "code": "6870",
-            "name": "Turn Cloud",
-            "close": 423.5,
-            "change_pct": 10.0,
-            "volume": 558,
-            "entry_price": 423.5,
-            "exit_price": 383.0,
+            "code": "2801",
+            "name": "CHANG HWA COMMERCIAL BANK LTD",
+            "close": 30.850000381469727,
+            "change_pct": 0.49,
+            "volume": 26517,
+            "entry_price": 30.850000381469727,
+            "exit_price": 30.25,
             "has_warning": false
         },
         {
@@ -173,23 +33,43 @@
             "has_warning": false
         },
         {
-            "code": "1789",
-            "name": "SCINOPHARM TAIWAN LTD",
-            "close": 20.299999237060547,
-            "change_pct": 1.5,
-            "volume": 722,
-            "entry_price": 20.299999237060547,
-            "exit_price": 19.950000762939453,
+            "code": "8272",
+            "name": "Changing",
+            "close": 85.9000015258789,
+            "change_pct": 9.99,
+            "volume": 209,
+            "entry_price": 85.9000015258789,
+            "exit_price": 85.9000015258789,
             "has_warning": false
         },
         {
-            "code": "2923",
-            "name": "SINO HORIZON HOLDINGS LIMITED",
-            "close": 29.299999237060547,
-            "change_pct": 8.52,
-            "volume": 304,
-            "entry_price": 29.299999237060547,
-            "exit_price": 27.0,
+            "code": "5013",
+            "name": "NEW BEST WIRE INDUSTRIAL CO",
+            "close": 60.599998474121094,
+            "change_pct": 9.98,
+            "volume": 5194,
+            "entry_price": 60.599998474121094,
+            "exit_price": 56.20000076293945,
+            "has_warning": false
+        },
+        {
+            "code": "6233",
+            "name": "PROLIFIC TECH INC",
+            "close": 35.20000076293945,
+            "change_pct": 10.0,
+            "volume": 5738,
+            "entry_price": 35.20000076293945,
+            "exit_price": 31.899999618530273,
+            "has_warning": false
+        },
+        {
+            "code": "6234",
+            "name": "TERA AUTOTECH CORP",
+            "close": 53.20000076293945,
+            "change_pct": 9.92,
+            "volume": 11605,
+            "entry_price": 53.20000076293945,
+            "exit_price": 47.25,
             "has_warning": false
         },
         {
@@ -203,13 +83,223 @@
             "has_warning": false
         },
         {
-            "code": "2801",
-            "name": "CHANG HWA COMMERCIAL BANK LTD",
-            "close": 30.850000381469727,
-            "change_pct": 0.49,
-            "volume": 26517,
-            "entry_price": 30.850000381469727,
-            "exit_price": 30.25,
+            "code": "4116",
+            "name": "BENQ MEDICAL TECHNOLOGY CORPORA",
+            "close": 44.70000076293945,
+            "change_pct": 1.13,
+            "volume": 357,
+            "entry_price": 44.70000076293945,
+            "exit_price": 44.29999923706055,
+            "has_warning": false
+        },
+        {
+            "code": "3285",
+            "name": "MICROTIPS TECHNOLOGY INC",
+            "close": 45.0,
+            "change_pct": 5.14,
+            "volume": 430,
+            "entry_price": 45.0,
+            "exit_price": 42.849998474121094,
+            "has_warning": false
+        },
+        {
+            "code": "1416",
+            "name": "KWONG FONG INDUSTRIES",
+            "close": 13.550000190734863,
+            "change_pct": 4.63,
+            "volume": 2431,
+            "entry_price": 13.550000190734863,
+            "exit_price": 13.0,
+            "has_warning": false
+        },
+        {
+            "code": "6140",
+            "name": "DIMENSION COMPUTER TECHNOLOGY",
+            "close": 24.950000762939453,
+            "change_pct": 9.91,
+            "volume": 2799,
+            "entry_price": 24.950000762939453,
+            "exit_price": 22.399999618530273,
+            "has_warning": false
+        },
+        {
+            "code": "6689",
+            "name": "ECLOUDVALLEY DIGITAL TECHNOLOGY",
+            "close": 77.30000305175781,
+            "change_pct": 9.96,
+            "volume": 2763,
+            "entry_price": 77.30000305175781,
+            "exit_price": 71.5999984741211,
+            "has_warning": false
+        },
+        {
+            "code": "1789",
+            "name": "SCINOPHARM TAIWAN LTD",
+            "close": 20.299999237060547,
+            "change_pct": 1.5,
+            "volume": 722,
+            "entry_price": 20.299999237060547,
+            "exit_price": 19.950000762939453,
+            "has_warning": false
+        },
+        {
+            "code": "6870",
+            "name": "Turn Cloud",
+            "close": 423.5,
+            "change_pct": 10.0,
+            "volume": 558,
+            "entry_price": 423.5,
+            "exit_price": 383.0,
+            "has_warning": false
+        },
+        {
+            "code": "2468",
+            "name": "FORTUNE INFORMATION SYSTEMS COR",
+            "close": 58.5,
+            "change_pct": 9.96,
+            "volume": 22430,
+            "entry_price": 58.5,
+            "exit_price": 52.70000076293945,
+            "has_warning": false
+        },
+        {
+            "code": "2254",
+            "name": "COPLUS INC",
+            "close": 106.5,
+            "change_pct": 2.9,
+            "volume": 3248,
+            "entry_price": 106.5,
+            "exit_price": 103.5,
+            "has_warning": false
+        },
+        {
+            "code": "6609",
+            "name": "TAIWAN TAKISAWA TECHNOLOGY CO",
+            "close": 45.400001525878906,
+            "change_pct": 9.93,
+            "volume": 1316,
+            "entry_price": 45.400001525878906,
+            "exit_price": 41.599998474121094,
+            "has_warning": false
+        },
+        {
+            "code": "8099",
+            "name": "TATUNG SYSTEM TECHNOLOGIES INC",
+            "close": 122.5,
+            "change_pct": 9.87,
+            "volume": 1635,
+            "entry_price": 122.5,
+            "exit_price": 109.5,
+            "has_warning": false
+        },
+        {
+            "code": "2466",
+            "name": "COSMO ELECTRONICS",
+            "close": 380.0,
+            "change_pct": 7.34,
+            "volume": 844,
+            "entry_price": 380.0,
+            "exit_price": 354.0,
+            "has_warning": false
+        },
+        {
+            "code": "2603",
+            "name": "EVERGREEN MARINE CORP(TAIWAN)",
+            "close": 274.5,
+            "change_pct": 1.1,
+            "volume": 12504,
+            "entry_price": 274.5,
+            "exit_price": 269.0,
+            "has_warning": false
+        },
+        {
+            "code": "6199",
+            "name": "TIENPIN UNITED ENTERPRISE CO LT",
+            "close": 162.5,
+            "change_pct": 1.25,
+            "volume": 7602,
+            "entry_price": 162.5,
+            "exit_price": 161.0,
+            "has_warning": false
+        },
+        {
+            "code": "5880",
+            "name": "TAIWAN COOPERATIVE FINANCIAL HL",
+            "close": 29.049999237060547,
+            "change_pct": 0.17,
+            "volume": 22278,
+            "entry_price": 29.049999237060547,
+            "exit_price": 28.700000762939453,
+            "has_warning": false
+        },
+        {
+            "code": "6590",
+            "name": "PROVISION INFORMATION CO LTD",
+            "close": 84.30000305175781,
+            "change_pct": 9.91,
+            "volume": 444,
+            "entry_price": 84.30000305175781,
+            "exit_price": 77.0999984741211,
+            "has_warning": false
+        },
+        {
+            "code": "1216",
+            "name": "UNI-PRESIDENT ENTERPRISES CORP",
+            "close": 80.5999984741211,
+            "change_pct": 0.5,
+            "volume": 11890,
+            "entry_price": 80.5999984741211,
+            "exit_price": 80.0999984741211,
+            "has_warning": false
+        },
+        {
+            "code": "9917",
+            "name": "TAIWAN SECOM CO",
+            "close": 109.5,
+            "change_pct": 1.39,
+            "volume": 404,
+            "entry_price": 109.5,
+            "exit_price": 108.5,
+            "has_warning": false
+        },
+        {
+            "code": "6240",
+            "name": "SUNG GANG CORP LTD",
+            "close": 39.400001525878906,
+            "change_pct": 9.9,
+            "volume": 705,
+            "entry_price": 39.400001525878906,
+            "exit_price": 35.0,
+            "has_warning": false
+        },
+        {
+            "code": "8455",
+            "name": "DAITO ME HOLDINGS CO LTD",
+            "close": 31.950000762939453,
+            "change_pct": 9.98,
+            "volume": 132,
+            "entry_price": 31.950000762939453,
+            "exit_price": 28.049999237060547,
+            "has_warning": false
+        },
+        {
+            "code": "3325",
+            "name": "CASING MACRON TECHNOLOGY CO",
+            "close": 14.5,
+            "change_pct": 6.62,
+            "volume": 1645,
+            "entry_price": 14.5,
+            "exit_price": 13.449999809265137,
+            "has_warning": false
+        },
+        {
+            "code": "6697",
+            "name": "INFORMATION TECHNOLOGY TOTAL SE",
+            "close": 59.70000076293945,
+            "change_pct": 9.94,
+            "volume": 3037,
+            "entry_price": 59.70000076293945,
+            "exit_price": 56.0,
             "has_warning": false
         }
     ]
