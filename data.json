@@ -1,175 +1,85 @@
 {
-    "updated_at": "2026-11-05 15:06:33",
-    "total_count": 17,
+    "updated_at": "2026-11-06 14:38:46",
+    "total_count": 8,
     "stocks": [
         {
-            "code": "6590",
-            "name": "PROVISION INFORMATION CO LTD",
-            "close": 89.30000305175781,
-            "change_pct": 9.98,
-            "volume": 741,
-            "entry_price": 89.30000305175781,
-            "exit_price": 75.9000015258789,
-            "has_warning": false
-        },
-        {
-            "code": "1416",
-            "name": "KWONG FONG INDUSTRIES",
-            "close": 14.899999618530273,
-            "change_pct": 5.3,
-            "volume": 13308,
-            "entry_price": 14.899999618530273,
-            "exit_price": 13.25,
-            "has_warning": false
-        },
-        {
-            "code": "2468",
-            "name": "FORTUNE INFORMATION SYSTEMS COR",
-            "close": 59.0,
-            "change_pct": -2.96,
-            "volume": 50633,
-            "entry_price": 59.0,
-            "exit_price": 54.900001525878906,
-            "has_warning": false
-        },
-        {
-            "code": "8432",
-            "name": "TSH BIOPHARM CORPORATION LIMITE",
-            "close": 59.599998474121094,
-            "change_pct": -1.65,
-            "volume": 388,
-            "entry_price": 59.599998474121094,
-            "exit_price": 56.599998474121094,
-            "has_warning": false
-        },
-        {
-            "code": "6708",
-            "name": "MARS",
-            "close": 75.69999694824219,
-            "change_pct": 9.24,
-            "volume": 1810,
-            "entry_price": 75.69999694824219,
-            "exit_price": 62.099998474121094,
-            "has_warning": false
-        },
-        {
-            "code": "7767",
-            "name": "HPI",
-            "close": 52.599998474121094,
-            "change_pct": -9.93,
-            "volume": 2589,
-            "entry_price": 52.599998474121094,
-            "exit_price": 49.0,
-            "has_warning": false
-        },
-        {
-            "code": "3287",
-            "name": "KWORLD COMPUTER CO",
-            "close": 66.69999694824219,
-            "change_pct": -6.71,
-            "volume": 7369,
-            "entry_price": 66.69999694824219,
-            "exit_price": 57.5,
-            "has_warning": false
-        },
-        {
-            "code": "2033",
-            "name": "CHIA TA WORLD",
-            "close": 74.69999694824219,
-            "change_pct": -3.11,
-            "volume": 12000,
-            "entry_price": 74.69999694824219,
-            "exit_price": 65.69999694824219,
-            "has_warning": false
-        },
-        {
-            "code": "6199",
-            "name": "TIENPIN UNITED ENTERPRISE CO LT",
-            "close": 167.0,
-            "change_pct": 0.91,
-            "volume": 7674,
-            "entry_price": 167.0,
-            "exit_price": 162.5,
-            "has_warning": false
-        },
-        {
-            "code": "6148",
-            "name": "AZION CORPORATION",
-            "close": 43.400001525878906,
-            "change_pct": -1.81,
-            "volume": 49366,
-            "entry_price": 43.400001525878906,
-            "exit_price": 38.95000076293945,
-            "has_warning": false
-        },
-        {
-            "code": "2465",
-            "name": "LEADTEK RESEARCH",
-            "close": 119.5,
-            "change_pct": -4.4,
-            "volume": 44002,
-            "entry_price": 119.5,
-            "exit_price": 106.0,
-            "has_warning": false
-        },
-        {
-            "code": "2618",
-            "name": "EVA AIRWAYS",
-            "close": 45.099998474121094,
-            "change_pct": 3.09,
-            "volume": 62500,
-            "entry_price": 45.099998474121094,
-            "exit_price": 43.099998474121094,
-            "has_warning": false
-        },
-        {
-            "code": "8272",
-            "name": "Changing",
-            "close": 92.69999694824219,
-            "change_pct": -10.0,
-            "volume": 488,
-            "entry_price": 92.69999694824219,
-            "exit_price": 85.0,
-            "has_warning": false
-        },
-        {
-            "code": "6865",
-            "name": "WebComm",
-            "close": 36.29999923706055,
-            "change_pct": 10.0,
-            "volume": 738,
-            "entry_price": 36.29999923706055,
-            "exit_price": 32.900001525878906,
-            "has_warning": false
-        },
-        {
-            "code": "2023",
-            "name": "YIEH PHUI ENTERPRISE CO",
-            "close": 14.899999618530273,
-            "change_pct": -1.0,
-            "volume": 2424,
-            "entry_price": 14.899999618530273,
-            "exit_price": 14.699999809265137,
+            "code": "4174",
+            "name": "OBI PHARMA INC",
+            "close": 48.54999923706055,
+            "change_pct": 3.41,
+            "volume": 1835,
+            "entry_price": 48.54999923706055,
+            "exit_price": 43.0,
             "has_warning": false
         },
         {
             "code": "2254",
             "name": "COPLUS INC",
-            "close": 109.0,
-            "change_pct": 1.4,
-            "volume": 3065,
-            "entry_price": 109.0,
-            "exit_price": 99.0999984741211,
+            "close": 110.0,
+            "change_pct": 0.92,
+            "volume": 3759,
+            "entry_price": 110.0,
+            "exit_price": 106.5,
+            "has_warning": false
+        },
+        {
+            "code": "4155",
+            "name": "OK BIOTECH CO LTD",
+            "close": 17.899999618530273,
+            "change_pct": 9.48,
+            "volume": 1473,
+            "entry_price": 17.899999618530273,
+            "exit_price": 15.25,
             "has_warning": false
         },
         {
             "code": "8099",
             "name": "TATUNG SYSTEM TECHNOLOGIES INC",
-            "close": 152.0,
-            "change_pct": 5.92,
-            "volume": 876,
-            "entry_price": 152.0,
-            "exit_price": 126.0,
+            "close": 148.5,
+            "change_pct": -2.3,
+            "volume": 744,
+            "entry_price": 148.5,
+            "exit_price": 136.0,
+            "has_warning": false
+        },
+        {
+            "code": "3287",
+            "name": "KWORLD COMPUTER CO",
+            "close": 73.30000305175781,
+            "change_pct": 9.9,
+            "volume": 3721,
+            "entry_price": 73.30000305175781,
+            "exit_price": 60.5,
+            "has_warning": false
+        },
+        {
+            "code": "6782",
+            "name": "VISCO VISION INC",
+            "close": 274.5,
+            "change_pct": 3.39,
+            "volume": 1354,
+            "entry_price": 274.5,
+            "exit_price": 239.0,
+            "has_warning": false
+        },
+        {
+            "code": "1416",
+            "name": "KWONG FONG INDUSTRIES",
+            "close": 16.350000381469727,
+            "change_pct": 9.73,
+            "volume": 19341,
+            "entry_price": 16.350000381469727,
+            "exit_price": 13.350000381469727,
+            "has_warning": false
+        },
+        {
+            "code": "2412",
+            "name": "CHUNGHWA TELECOM",
+            "close": 163.5,
+            "change_pct": 1.24,
+            "volume": 27171,
+            "entry_price": 163.5,
+            "exit_price": 156.5,
             "has_warning": false
         }
     ]
