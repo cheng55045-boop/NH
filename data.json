@@ -1,15 +1,15 @@
 {
-    "updated_at": "2026-11-06 14:38:46",
+    "updated_at": "2026-11-09 16:49:34",
     "total_count": 8,
     "stocks": [
         {
-            "code": "4174",
-            "name": "OBI PHARMA INC",
-            "close": 48.54999923706055,
-            "change_pct": 3.41,
-            "volume": 1835,
-            "entry_price": 48.54999923706055,
-            "exit_price": 43.0,
+            "code": "1416",
+            "name": "KWONG FONG INDUSTRIES",
+            "close": 16.350000381469727,
+            "change_pct": 9.73,
+            "volume": 19293,
+            "entry_price": 16.350000381469727,
+            "exit_price": 13.350000381469727,
             "has_warning": false
         },
         {
@@ -17,59 +17,9 @@
             "name": "COPLUS INC",
             "close": 110.0,
             "change_pct": 0.92,
-            "volume": 3759,
+            "volume": 3758,
             "entry_price": 110.0,
             "exit_price": 106.5,
-            "has_warning": false
-        },
-        {
-            "code": "4155",
-            "name": "OK BIOTECH CO LTD",
-            "close": 17.899999618530273,
-            "change_pct": 9.48,
-            "volume": 1473,
-            "entry_price": 17.899999618530273,
-            "exit_price": 15.25,
-            "has_warning": false
-        },
-        {
-            "code": "8099",
-            "name": "TATUNG SYSTEM TECHNOLOGIES INC",
-            "close": 148.5,
-            "change_pct": -2.3,
-            "volume": 744,
-            "entry_price": 148.5,
-            "exit_price": 136.0,
-            "has_warning": false
-        },
-        {
-            "code": "3287",
-            "name": "KWORLD COMPUTER CO",
-            "close": 73.30000305175781,
-            "change_pct": 9.9,
-            "volume": 3721,
-            "entry_price": 73.30000305175781,
-            "exit_price": 60.5,
-            "has_warning": false
-        },
-        {
-            "code": "6782",
-            "name": "VISCO VISION INC",
-            "close": 274.5,
-            "change_pct": 3.39,
-            "volume": 1354,
-            "entry_price": 274.5,
-            "exit_price": 239.0,
-            "has_warning": false
-        },
-        {
-            "code": "1416",
-            "name": "KWONG FONG INDUSTRIES",
-            "close": 16.350000381469727,
-            "change_pct": 9.73,
-            "volume": 19341,
-            "entry_price": 16.350000381469727,
-            "exit_price": 13.350000381469727,
             "has_warning": false
         },
         {
@@ -77,9 +27,59 @@
             "name": "CHUNGHWA TELECOM",
             "close": 163.5,
             "change_pct": 1.24,
-            "volume": 27171,
+            "volume": 26954,
             "entry_price": 163.5,
             "exit_price": 156.5,
+            "has_warning": false
+        },
+        {
+            "code": "4174",
+            "name": "OBI PHARMA INC",
+            "close": 48.54999923706055,
+            "change_pct": 3.41,
+            "volume": 1822,
+            "entry_price": 48.54999923706055,
+            "exit_price": 43.0,
+            "has_warning": false
+        },
+        {
+            "code": "3287",
+            "name": "KWORLD COMPUTER CO",
+            "close": 73.30000305175781,
+            "change_pct": 9.9,
+            "volume": 3705,
+            "entry_price": 73.30000305175781,
+            "exit_price": 60.5,
+            "has_warning": false
+        },
+        {
+            "code": "8099",
+            "name": "TATUNG SYSTEM TECHNOLOGIES INC",
+            "close": 148.5,
+            "change_pct": -2.3,
+            "volume": 729,
+            "entry_price": 148.5,
+            "exit_price": 136.0,
+            "has_warning": false
+        },
+        {
+            "code": "6782",
+            "name": "VISCO VISION INC",
+            "close": 274.5,
+            "change_pct": 3.39,
+            "volume": 1328,
+            "entry_price": 274.5,
+            "exit_price": 239.0,
+            "has_warning": false
+        },
+        {
+            "code": "4155",
+            "name": "OK BIOTECH CO LTD",
+            "close": 17.899999618530273,
+            "change_pct": 9.48,
+            "volume": 1469,
+            "entry_price": 17.899999618530273,
+            "exit_price": 15.25,
             "has_warning": false
         }
     ]
