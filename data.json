@@ -1,75 +1,25 @@
 {
-    "updated_at": "2026-11-18 16:02:40",
-    "total_count": 7,
+    "updated_at": "2026-11-19 16:05:41",
+    "total_count": 2,
     "stocks": [
         {
             "code": "6199",
             "name": "TIENPIN UNITED ENTERPRISE CO LT",
             "close": 171.5,
             "change_pct": 0.88,
-            "volume": 8918,
+            "volume": 8907,
             "entry_price": 171.5,
             "exit_price": 168.5,
             "has_warning": false
         },
         {
-            "code": "2468",
-            "name": "FORTUNE INFORMATION SYSTEMS COR",
-            "close": 73.5,
-            "change_pct": -9.93,
-            "volume": 17685,
-            "entry_price": 73.5,
-            "exit_price": 69.0,
-            "has_warning": false
-        },
-        {
-            "code": "1614",
-            "name": "SANYO ELECTRIC CO(TAIWAN)",
-            "close": 32.45000076293945,
-            "change_pct": 2.04,
-            "volume": 124,
-            "entry_price": 32.45000076293945,
-            "exit_price": 31.450000762939453,
-            "has_warning": false
-        },
-        {
-            "code": "6140",
-            "name": "DIMENSION COMPUTER TECHNOLOGY",
-            "close": 31.399999618530273,
-            "change_pct": -9.9,
-            "volume": 3201,
-            "entry_price": 31.399999618530273,
-            "exit_price": 28.850000381469727,
-            "has_warning": false
-        },
-        {
-            "code": "6865",
-            "name": "WebComm",
-            "close": 37.349998474121094,
-            "change_pct": -9.89,
-            "volume": 463,
-            "entry_price": 37.349998474121094,
-            "exit_price": 37.349998474121094,
-            "has_warning": false
-        },
-        {
-            "code": "6697",
-            "name": "INFORMATION TECHNOLOGY TOTAL SE",
-            "close": 79.80000305175781,
-            "change_pct": -9.93,
-            "volume": 2492,
-            "entry_price": 79.80000305175781,
-            "exit_price": 75.5999984741211,
-            "has_warning": false
-        },
-        {
-            "code": "2618",
-            "name": "EVA AIRWAYS",
-            "close": 48.099998474121094,
-            "change_pct": 1.48,
-            "volume": 32759,
-            "entry_price": 48.099998474121094,
-            "exit_price": 45.349998474121094,
+            "code": "8455",
+            "name": "DAITO ME HOLDINGS CO LTD",
+            "close": 35.099998474121094,
+            "change_pct": 9.86,
+            "volume": 102,
+            "entry_price": 35.099998474121094,
+            "exit_price": 30.549999237060547,
             "has_warning": false
         }
     ]
