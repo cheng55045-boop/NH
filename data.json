@@ -1,26 +1,5 @@
 {
-    "updated_at": "2026-11-19 16:05:41",
-    "total_count": 2,
-    "stocks": [
-        {
-            "code": "6199",
-            "name": "TIENPIN UNITED ENTERPRISE CO LT",
-            "close": 171.5,
-            "change_pct": 0.88,
-            "volume": 8907,
-            "entry_price": 171.5,
-            "exit_price": 168.5,
-            "has_warning": false
-        },
-        {
-            "code": "8455",
-            "name": "DAITO ME HOLDINGS CO LTD",
-            "close": 35.099998474121094,
-            "change_pct": 9.86,
-            "volume": 102,
-            "entry_price": 35.099998474121094,
-            "exit_price": 30.549999237060547,
-            "has_warning": false
-        }
-    ]
+    "updated_at": "2026-11-20 15:54:58",
+    "total_count": 0,
+    "stocks": []
 }
