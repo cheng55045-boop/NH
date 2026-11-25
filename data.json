@@ -1,15 +1,45 @@
 {
-    "updated_at": "2026-11-24 18:18:36",
-    "total_count": 1,
+    "updated_at": "2026-11-25 17:38:58",
+    "total_count": 4,
     "stocks": [
+        {
+            "code": "2597",
+            "name": "RUENTEX ENGINEERING & CONST. CO",
+            "close": 192.0,
+            "change_pct": 8.17,
+            "volume": 1942,
+            "entry_price": 192.0,
+            "exit_price": 172.0,
+            "has_warning": false
+        },
+        {
+            "code": "7584",
+            "name": "HAPPYTUK",
+            "close": 46.849998474121094,
+            "change_pct": -3.4,
+            "volume": 349,
+            "entry_price": 46.849998474121094,
+            "exit_price": 40.04999923706055,
+            "has_warning": false
+        },
         {
             "code": "6199",
             "name": "TIENPIN UNITED ENTERPRISE CO LT",
-            "close": 172.5,
-            "change_pct": 1.77,
-            "volume": 13113,
-            "entry_price": 172.5,
+            "close": 173.0,
+            "change_pct": 0.29,
+            "volume": 10030,
+            "entry_price": 173.0,
             "exit_price": 168.0,
+            "has_warning": false
+        },
+        {
+            "code": "2063",
+            "name": "SHEH KAI PRECISION CO LTD",
+            "close": 22.399999618530273,
+            "change_pct": 7.43,
+            "volume": 100,
+            "entry_price": 22.399999618530273,
+            "exit_price": 20.200000762939453,
             "has_warning": false
         }
     ]
